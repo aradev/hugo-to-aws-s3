@@ -37,13 +37,14 @@ jobs:
         command: |
           export CUSTOM_DOCKER_IMAGE_TAG=build-$(date +"%Y%m%d-%H%M%S")
           docker build \
-             \
-            -f Dockerfile -t \
-            docker.io/hugobuildpublish/hugo-to-aws-s3:$CUSTOM_DOCKER_IMAGE_TAG \
+             -f Dockerfile \
+            -t docker.io/hugobuildpublish/hugo-to-aws-s3:$CUSTOM_DOCKER_IMAGE_TAG \
+            -t docker.io/hugobuildpublish/hugo-to-aws-s3:latest \
             .
             if [[ $CIRCLE_BRANCH == "master" ]]
             then
               docker push docker.io/hugobuildpublish/hugo-to-aws-s3:$CUSTOM_DOCKER_IMAGE_TAG
+              docker push docker.io/hugobuildpublish/hugo-to-aws-s3:latest
             fi
         name: Docker build & push
 workflows:
