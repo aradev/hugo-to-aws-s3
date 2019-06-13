@@ -37,8 +37,7 @@ jobs:
         command: |
           export CUSTOM_DOCKER_IMAGE_TAG=build-$(date +"%Y%m%d-%H%M%S")
           docker build \
-             \
-            -f Dockerfile
+             -f Dockerfile \
             -t docker.io/hugobuildpublish/hugo-to-aws-s3:$CUSTOM_DOCKER_IMAGE_TAG \
             -t docker.io/hugobuildpublish/hugo-to-aws-s3:latest \
             .
