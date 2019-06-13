@@ -35,7 +35,7 @@ jobs:
         name: Docker login
     - run:
         command: |
-          export CUSTOM_DOCKER_IMAGE_TAG=$(date +"%Y%m%d_%H%M%S")
+          export CUSTOM_DOCKER_IMAGE_TAG=build-$(date +"%Y%m%d-%H%M%S")
           docker build \
              \
             -f Dockerfile -t \
