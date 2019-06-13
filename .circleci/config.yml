@@ -34,19 +34,15 @@ jobs:
             docker.io
         name: Docker login
     - run:
-        command: export CUSTOM_DOCKER_IMAGE_TAG=$(date +"%Y%m%d_%H%M%S")
-    - run:
         command: |
+          export CUSTOM_DOCKER_IMAGE_TAG=$(date +"%Y%m%d_%H%M%S")
           docker build \
              \
             -f Dockerfile -t \
             docker.io/hugobuildpublish/hugo-to-aws-s3:$CUSTOM_DOCKER_IMAGE_TAG \
             .
-        name: Docker build
-    - deploy:
-        command: |
-          docker push docker.io/hugobuildpublish/hugo-to-aws-s3:$CUSTOM_DOCKER_IMAGE_TAG
-        name: Docker push
+            docker push docker.io/hugobuildpublish/hugo-to-aws-s3:$CUSTOM_DOCKER_IMAGE_TAG
+        name: Docker build & push
 workflows:
   build-and-publish-docker-image:
     jobs:
