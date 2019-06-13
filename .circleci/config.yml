@@ -1,0 +1,71 @@
+# Orb 'circleci/docker@0.5.0' resolved to 'circleci/docker@0.5.0'
+version: 2
+jobs:
+  docker/publish:
+    machine:
+      docker_layer_caching: false
+      #image: circleci/classic:latest
+    steps:
+    - checkout
+    - run:
+        command: |
+          if [[ -z "${DOCKER_LOGIN}" ]]; then
+            echo "ERROR: Missing environment variable DOCKER_LOGIN" >&2
+            if [[ -n "" ]]; then
+              echo "" >&2
+            fi
+            exit 1
+          fi
+        name: Checking if $DOCKER_LOGIN is defined...
+    - run:
+        command: |
+          if [[ -z "${DOCKER_PASSWORD}" ]]; then
+            echo "ERROR: Missing environment variable DOCKER_PASSWORD" >&2
+            if [[ -n "" ]]; then
+              echo "" >&2
+            fi
+            exit 1
+          fi
+        name: Checking if $DOCKER_PASSWORD is defined...
+    - run:
+        command: |
+          docker login \
+            -u "$DOCKER_LOGIN" -p "$DOCKER_PASSWORD" \
+            docker.io
+        name: Docker login
+    - run:
+        command: export CUSTOM_DOCKER_IMAGE_TAG=$(date +"%Y%m%d_%H%M%S")
+    - run:
+        command: |
+          docker build \
+             \
+            -f Dockerfile -t \
+            docker.io/hugobuildpublish/hugo-to-aws-s3:$CUSTOM_DOCKER_IMAGE_TAG \
+            .
+        name: Docker build
+    - deploy:
+        command: |
+          docker push docker.io/hugobuildpublish/hugo-to-aws-s3:$CUSTOM_DOCKER_IMAGE_TAG
+        name: Docker push
+workflows:
+  build-and-publish-docker-image:
+    jobs:
+    - docker/publish
+  version: 2
+
+# Original config.yml file:
+# # Use the latest 2.1 version of CircleCI pipeline processing engine, see https://circleci.com/docs/2.0/configuration-reference/
+# version: 2.1
+# 
+# orbs:
+#   docker: circleci/docker@0.5.0
+# 
+# workflows:
+#   build-and-publish-docker-image:
+#     jobs:
+#       - docker/publish:
+#           before_build:
+#             - run:
+#                 command: export CUSTOM_DOCKER_IMAGE_TAG=$(date +\"%Y%m%d_%H%M%S\")
+#           image: hugobuildpublish/hugo-to-aws-s3
+#           tag: $CUSTOM_DOCKER_IMAGE_TAG
