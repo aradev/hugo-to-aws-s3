@@ -30,6 +30,7 @@ RUN apt-get -q update && apt-get -y -q dist-upgrade \
 	bzip2 \
     ca-certificates \
     curl \
+    git \
     gnupg \
     gnutls-bin \
     gzip \
