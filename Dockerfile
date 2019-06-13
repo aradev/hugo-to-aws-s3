@@ -40,6 +40,13 @@ RUN apt-get -q update && apt-get -y -q dist-upgrade \
 	xz-utils \
 	&& rm -rf /var/lib/apt/lists/*
 
+RUN apt-get remove  -y -qq hugo \
+    && curl -L -s https://github.com/gohugoio/hugo/releases/download/v0.55.6/hugo_extended_0.55.6_Linux-64bit.deb \
+    > hugo.deb \
+    && ls -la \
+    && dpkg -i hugo.deb \
+    && rm hugo.deb
+
 ### Install Python / Miniconda3
 
 ENV CONDA_DIR=/opt/miniconda3
